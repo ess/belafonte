@@ -3,6 +3,7 @@ module Belafonte
     NoName = Class.new(StandardError)
     Invalid = Class.new(StandardError)
     NotEnoughData = Class.new(StandardError)
+    TooMuchData = Class.new(StandardError)
 
     attr_reader :name, :times
 

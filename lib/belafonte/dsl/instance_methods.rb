@@ -100,6 +100,10 @@ module Belafonte
           args[arg.name] = values
           temp_argv.shift(values.length)
         end
+
+        if temp_argv.length > 0
+          raise Belafonte::Argument::TooMuchData.new("More args provided than I can handle")
+        end
       end
 
       def setup_parser!

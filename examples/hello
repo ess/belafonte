@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'belafonte'
+rescue LoadError
+  $:.unshift File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
+  require 'belafonte'
+end
+
+
+class Hello < Belafonte::App
+  title "hello"
+  summary "Says hello"
+  description "This is an implementation of the classic programming example"
+
+  def handle
+    stdout.puts "Hello, world!"
+  end
+end
+
+exit Hello.new(ARGV).execute!
