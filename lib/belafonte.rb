@@ -1,5 +1,5 @@
 require "belafonte/version"
+require 'belafonte/app'
 
 module Belafonte
-  # Your code goes here...
 end
