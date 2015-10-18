@@ -23,12 +23,24 @@ module Belafonte
         self.class.switches
       end
 
+      def configured_options
+        self.class.options
+      end
+
       def switches
         @switches ||= {}
       end
 
       def switch_active(switch)
         switches[switch]
+      end
+
+      def options
+        @options ||= {}
+      end
+
+      def option(option)
+        options[option]
       end
 
       def args
@@ -84,9 +96,13 @@ module Belafonte
 
           configured_switches.each do |switch|
             opts.on(*(switch.to_opt_parse)) do
-              switch.flags.each do |flag|
-                switches[flag] = true
-              end
+              switches[switch.name] = true
+            end
+          end
+
+          configured_options.each do |option|
+            opts.on(*(option.to_opt_parse)) do |value|
+              options[option.name] = value
             end
           end
 

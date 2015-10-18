@@ -1,5 +1,6 @@
 require 'optparse'
 require 'belafonte/switch'
+require 'belafonte/option'
 
 module Belafonte
   module DSL
@@ -28,8 +29,16 @@ module Belafonte
         meta[:switches] ||= []
       end
 
-      def switch(switch_options = {})
-        switches.push(Belafonte::Switch.new(switch_options))
+      def switch(name, switch_options = {})
+        switches.push(Belafonte::Switch.new(switch_options.merge({name: name})))
+      end
+
+      def options
+        meta[:options] ||= []
+      end
+
+      def option(name, option_options = {})
+        options.push(Belafonte::Option.new(option_options.merge({name: name})))
       end
 
       def args
