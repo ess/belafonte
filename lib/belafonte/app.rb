@@ -5,9 +5,9 @@ module Belafonte
   class App
     include Belafonte::DSL
 
-    attr_reader :argv, :stdin, :stdout, :stderr, :kernel, :parent
+    attr_reader :argv, :stdin, :stdout, :stderr, :kernel
 
-    def initialize(argv, stdin = STDIN, stdout = STDOUT, stderr = STDERR, kernel = Kernel, parent = nil)
+    def initialize(argv, stdin = STDIN, stdout = STDOUT, stderr = STDERR, kernel = Kernel)
       @argv = argv
       @stdin = stdin
       @stdout = stdout
