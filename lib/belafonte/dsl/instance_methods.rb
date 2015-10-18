@@ -15,16 +15,16 @@ module Belafonte
         self.class.info(:description)
       end
 
-      def configured_options
-        self.class.info(:options)
-      end
-
       def configured_switches
         self.class.switches
       end
 
       def configured_options
         self.class.options
+      end
+
+      def configured_args
+        self.class.args
       end
 
       def switches
@@ -44,7 +44,11 @@ module Belafonte
       end
 
       def args
-        @args ||= []
+        @arguments ||= {}
+      end
+
+      def arg(arg)
+        args[arg]
       end
 
       def execute!
@@ -87,6 +91,15 @@ module Belafonte
 
       def help_active?
         help
+      end
+
+      def process_args!
+        temp_argv = @args.clone
+        configured_args.each do |arg|
+          values = arg.process(temp_argv)
+          args[arg.name] = values
+          temp_argv.shift(values.length)
+        end
       end
 
       def setup_parser!

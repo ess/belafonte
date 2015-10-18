@@ -1,6 +1,7 @@
 require 'optparse'
 require 'belafonte/switch'
 require 'belafonte/option'
+require 'belafonte/argument'
 
 module Belafonte
   module DSL
@@ -42,13 +43,15 @@ module Belafonte
       end
 
       def args
-        meta[:args] ||= {}
+        meta[:args] ||= []
       end
 
-      def arg(name, options = {})
-        options[:times] ||= 1
-        name = name.to_s
-        args[name] = options
+      def arg(name, arg_options = {})
+        if args.last && args.last.unlimited?
+          raise Belafonte::Argument::Invalid.new("You may not add other arguments after an unlimited argument")
+        else
+          args.push(Belafonte::Argument.new(arg_options.merge({name: name})))
+        end
       end
     end
   end

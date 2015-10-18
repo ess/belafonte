@@ -15,6 +15,7 @@ module Belafonte
       @kernel = kernel
       setup_parser!
       @args = parser.parse(argv)
+      process_args!
     end
   end
 end
