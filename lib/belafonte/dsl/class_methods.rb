@@ -1,15 +1,15 @@
+require 'optparse'
+require 'belafonte/switch'
+
 module Belafonte
   module DSL
     module ClassMethods
       def meta
-        @meta ||= {
-          title: "",
-          summary: "",
-          description: "",
-          arguments: [],
-          flags: [],
-          switches: []
-        }
+        @meta ||= {}
+      end
+
+      def info(item)
+        meta[item]
       end
 
       def title(title)
@@ -24,8 +24,22 @@ module Belafonte
         meta[:description] = description
       end
 
-      def info(datum)
-        meta[datum]
+      def switches
+        meta[:switches] ||= []
+      end
+
+      def switch(switch_options = {})
+        switches.push(Belafonte::Switch.new(switch_options))
+      end
+
+      def args
+        meta[:args] ||= {}
+      end
+
+      def arg(name, options = {})
+        options[:times] ||= 1
+        name = name.to_s
+        args[name] = options
       end
     end
   end
