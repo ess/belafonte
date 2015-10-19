@@ -17,7 +17,9 @@ module Belafonte
       @args = parser.parse(argv)
       begin
         process_args!
-      rescue Belafonte::Argument::NotEnoughData => e
+      rescue Belafonte::Argument::NotEnoughData,
+        Belafonte::Argument::TooMuchData => e
+
         activate_help!
       end
     end
