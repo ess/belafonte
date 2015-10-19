@@ -15,7 +15,13 @@ module Belafonte
       @kernel = kernel
       setup_parser!
       @args = parser.parse(argv)
-      process_args!
+      begin
+        process_args!
+      rescue Belafonte::Argument::NotEnoughData,
+        Belafonte::Argument::TooMuchData => e
+
+        activate_help!
+      end
     end
   end
 end
