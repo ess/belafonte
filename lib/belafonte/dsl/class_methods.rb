@@ -2,6 +2,7 @@ require 'optparse'
 require 'belafonte/switch'
 require 'belafonte/option'
 require 'belafonte/argument'
+require 'belafonte/errors'
 
 module Belafonte
   module DSL
@@ -48,10 +49,19 @@ module Belafonte
 
       def arg(name, arg_options = {})
         if args.last && args.last.unlimited?
-          raise Belafonte::Argument::Invalid.new("You may not add other arguments after an unlimited argument")
+          raise Belafonte::Errors::InvalidArgument.new("You may not add other arguments after an unlimited argument")
         else
           args.push(Belafonte::Argument.new(arg_options.merge({name: name})))
         end
+      end
+
+      def subcommands
+        meta[:subcommands] ||= []
+      end
+
+      def mount(app)
+        raise Belafonte::Errors::CircularMount.new("An app cannot mount itself") if app == self
+        subcommands.push(app)
       end
     end
   end

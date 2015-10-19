@@ -8,5 +8,6 @@ module Belafonte
     end
 
     include Belafonte::DSL::InstanceMethods
+    #include Belafonte::DSL::Mountin
   end
 end

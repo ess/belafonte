@@ -1,5 +1,6 @@
 require 'optparse'
 require 'belafonte/dsl'
+require 'belafonte/errors'
 
 module Belafonte
   class App
@@ -7,21 +8,19 @@ module Belafonte
 
     attr_reader :argv, :stdin, :stdout, :stderr, :kernel
 
-    def initialize(argv, stdin = STDIN, stdout = STDOUT, stderr = STDERR, kernel = Kernel)
+    def initialize(argv, stdin = STDIN, stdout = STDOUT, stderr = STDERR, kernel = Kernel, parent = nil)
       @argv = argv
       @stdin = stdin
       @stdout = stdout
       @stderr = stderr
       @kernel = kernel
-      setup_parser!
-      @args = parser.parse(argv)
-      begin
-        process_args!
-      rescue Belafonte::Argument::NotEnoughData,
-        Belafonte::Argument::TooMuchData => e
+      @parent = parent
+      setup_subcommands!
+    end
 
-        activate_help!
-      end
+    private
+    def parent
+      @parent
     end
   end
 end

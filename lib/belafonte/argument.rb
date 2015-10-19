@@ -1,15 +1,12 @@
+require 'belafonte/errors'
+
 module Belafonte
   class Argument
-    NoName = Class.new(StandardError)
-    Invalid = Class.new(StandardError)
-    NotEnoughData = Class.new(StandardError)
-    TooMuchData = Class.new(StandardError)
-
     attr_reader :name, :times
 
     def initialize(options = {})
       unless options[:name]
-        raise NoName.new("Arguments must be named")
+        raise Belafonte::Errors::NoName.new("Arguments must be named")
       end
 
       @name = options[:name]
@@ -22,7 +19,7 @@ module Belafonte
         @unlimited = true
       else
         @times = options[:times].to_i
-        raise Invalid.new("There must be at least one occurrence") if times < 1
+        raise Belafonte::Errors::InvalidArgument.new("There must be at least one occurrence") if times < 1
       end
     end
 
@@ -32,7 +29,7 @@ module Belafonte
         argv
       else
         if argv.length < times
-          raise NotEnoughData.new("Not enough arguments were given")
+          raise Belafonte::Errors::TooFewArguments.new("Not enough arguments were given")
         end
         argv.first(times)
       end.clone

@@ -1,3 +1,5 @@
+require 'belafonte/errors'
+
 module Belafonte
   class Flag
     NoFlags = Class.new(StandardError)
@@ -11,20 +13,13 @@ module Belafonte
 
     def initialize(options = {})
       unless options[:name]
-        raise NoName.new("Flag name cannot be blank")
+        raise Belafonte::Errors::NoName.new("Flag name cannot be blank")
       end
 
       @name = options[:name].to_sym
 
-      @short = [options[:short]].
-        flatten.
-        map {|flag| normalize_flag(flag)}.
-        reject {|flag| flag == ''}
-
-      @long = [options[:long]].
-        flatten.
-        map {|flag| normalize_flag(flag)}.
-        reject {|flag| flag == ''}
+      @short = flag_array(options[:short])
+      @long = flag_array(options[:long])
 
       if short.empty? && long.empty?
         raise NoFlags.new("You must define at least one flag")
@@ -53,6 +48,13 @@ module Belafonte
 
     def longify(option)
       "--#{option.to_s}"
+    end
+
+    def flag_array(items)
+      [items].
+        flatten.
+        map {|flag| normalize_flag(flag)}.
+        reject {|flag| flag == ''}
     end
   end
 end

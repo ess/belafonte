@@ -27,6 +27,10 @@ module Belafonte
         self.class.args
       end
 
+      def configured_subcommands
+        self.class.subcommands
+      end
+
       def switches
         @switches ||= {}
       end
@@ -51,7 +55,29 @@ module Belafonte
         args[arg]
       end
 
+      def subcommands
+        @subcommands ||= []
+      end
+
+      def estate
+        @estate ||= {}
+      end
+
+      def bequeathed(name, value)
+        estate[name] ||= value
+      end
+
       def execute!
+        setup_parser!
+        parse_options!
+
+        begin
+          process_args!
+        rescue Belafonte::Argument::NotEnoughData,
+          Belafonte::Argument::TooMuchData => e
+          activate_help!
+        end
+
         #before
         if help_active?
           stdout.puts parser
@@ -67,6 +93,15 @@ module Belafonte
         #after
         return 0
       end
+
+      def root
+        if parent
+          parent.root
+        else
+          self
+        end
+      end
+
 
       private
       def parser
@@ -91,6 +126,16 @@ module Belafonte
 
       def help_active?
         help
+      end
+
+      def setup_subcommands!
+        configured_subcommands.each do |sub|
+          subcommands.push(sub.new(argv, stdin, stdout, stderr, kernel, self))
+        end
+      end
+
+      def root?
+        root == self
       end
 
       def process_args!
@@ -123,10 +168,14 @@ module Belafonte
             end
           end
 
-          opts.on_tail('-h', '--help', 'Prints the help for the command') do
+          opts.on_tail('-h', '--help', 'Prints this help message') do
             activate_help!
           end
         end
+      end
+
+      def parse_options!
+        @args = @parser.parse(argv)
       end
     end
   end
