@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'belafonte'
+rescue LoadError
+  $:.unshift File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
+  require 'belafonte'
+end
+
+class Echo < Belafonte::App
+
+  title "echo"
+  summary "Just like system echo"
+  description "This prints all of its arguments to the terminal"
+
+  switch :no_newline,
+    short: 'n',
+    description: "Suppresses the newline at the end of output"
+
+  arg :string, times: :unlimited
+
+  def handle
+    stdout.print arg(:string).map(&:to_s).join(' ') + newline
+  end
+
+  def newline
+    switch_active(:no_newline) ? '' : "\n"
+  end
+end
+
+class Cmd < Belafonte::App
+  title "cmd"
+  summary "A wrapper for a command suite"
+
+  option :face,
+    short: 'f',
+    long: 'face',
+    description: 'adds a funny face to output',
+    argument: 'FACE'
+
+  mount Echo
+
+  def handle
+    stdout.puts "This should not get executed"
+    kernel.exit(1)
+  end
+end
+
+exit Cmd.new(ARGV).execute!

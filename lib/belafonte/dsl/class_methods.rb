@@ -60,6 +60,10 @@ module Belafonte
       end
 
       def mount(app)
+        unless args.any? {|arg| arg.name.to_sym == :command}
+          arg :command, times: :unlimited
+        end
+
         raise Belafonte::Errors::CircularMount.new("An app cannot mount itself") if app == self
         subcommands.push(app)
       end
