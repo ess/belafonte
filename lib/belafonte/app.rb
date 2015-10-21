@@ -35,6 +35,8 @@ module Belafonte
 
       @command = arg(:command).shift if arg(:command)
 
+      run_setup
+
       unless dispatch || show_help || run_handle
         stderr.puts "No handler for the provided command line"
         return 1
@@ -81,6 +83,11 @@ module Belafonte
       return false unless respond_to?(:handle)
       handle
       true
+    end
+
+    def run_setup
+      return nil unless respond_to?(:setup)
+      setup
     end
   end
 end
