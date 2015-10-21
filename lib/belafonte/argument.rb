@@ -1,26 +1,14 @@
 require 'belafonte/errors'
 
 module Belafonte
+  # Represents a command line argument
   class Argument
     attr_reader :name, :times
 
     def initialize(options = {})
-      unless options[:name]
-        raise Belafonte::Errors::NoName.new("Arguments must be named")
-      end
-
       @name = options[:name]
-
-      case options[:times]
-      when nil
-        @times = 1
-      when :unlimited
-        @times = -1
-        @unlimited = true
-      else
-        @times = options[:times].to_i
-        raise Belafonte::Errors::InvalidArgument.new("There must be at least one occurrence") if times < 1
-      end
+      @times = options[:times]
+      normalize
     end
 
     def process(argv)
@@ -38,5 +26,23 @@ module Belafonte
     def unlimited?
       @unlimited ||= false
     end
+
+    private
+    def normalize
+      raise Belafonte::Errors::NoName.new("Arguments must be named") unless name
+
+      case times
+      when nil
+        @times = 1
+      when :unlimited
+        @times = -1
+        @unlimited = true
+      else
+        @times = times.to_i
+      end
+      
+      raise Belafonte::Errors::InvalidArgument.new("There must be at least one occurrence") unless times > 0 || unlimited?
+    end
+
   end
 end

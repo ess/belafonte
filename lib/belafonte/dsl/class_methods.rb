@@ -6,6 +6,7 @@ require 'belafonte/errors'
 
 module Belafonte
   module DSL
+    # Class methods for defining apps
     module ClassMethods
       def meta
         @meta ||= {}
@@ -48,10 +49,12 @@ module Belafonte
       end
 
       def arg(name, arg_options = {})
-        if args.last && args.last.unlimited?
-          raise Belafonte::Errors::InvalidArgument.new("You may not add other arguments after an unlimited argument")
-        else
-          args.push(Belafonte::Argument.new(arg_options.merge({name: name})))
+        args.last.tap do |arg|
+          if arg && arg.unlimited?
+            raise Belafonte::Errors::InvalidArgument.new("You may not add other arguments after an unlimited argument")
+          else
+            args.push(Belafonte::Argument.new(arg_options.merge({name: name})))
+          end
         end
       end
 

@@ -7,6 +7,16 @@ rescue LoadError
   require 'belafonte'
 end
 
+class TrueApp < Belafonte::App
+  title "true"
+  summary "Just like system true"
+  description "All this does is exit with a 'true' value"
+
+  def handle
+    kernel.exit(0)
+  end
+end
+
 class Echo < Belafonte::App
 
   title "echo"
@@ -39,6 +49,7 @@ class Cmd < Belafonte::App
     argument: 'FACE'
 
   mount Echo
+  mount TrueApp
 
   def handle
     stdout.puts "This should not get executed"
