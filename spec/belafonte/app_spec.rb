@@ -3,13 +3,13 @@ require 'belafonte/app'
 
 module Belafonte
   describe App do
+    let(:argv) {["argv"]}
+    let(:stdin) {Toady.new}
+    let(:stdout) {Toady.new}
+    let(:stderr) {Toady.new}
+    let(:kernel) {Toady.new}
+    
     describe '.new' do
-      let(:argv) {["argv"]}
-      let(:stdin) {'stdin'}
-      let(:stdout) {'stdout'}
-      let(:stderr) {'stderr'}
-      let(:kernel) {'kernel'}
-
       it 'requires argv' do
         expect{Simple.new}.to raise_error(ArgumentError)
         expect{Simple.new(argv)}.not_to raise_error
@@ -22,19 +22,21 @@ module Belafonte
         expect(simple.stderr).to eql(STDERR)
         expect(simple.kernel).to eql(Kernel)
       end
+    end
 
+    describe '.execute!' do
       it 'sets up the parser' do
         expect_any_instance_of(Simple).
           to receive(:setup_parser!).and_call_original
 
-        Simple.new(argv)
+        Simple.new(argv).execute!
       end
 
       it 'processes argv' do
         expect_any_instance_of(Simple).
           to receive(:process_args!).and_call_original
 
-        Simple.new(argv)
+        Simple.new(argv).execute!
       end
     end
 
@@ -42,6 +44,21 @@ module Belafonte
       it 'returns the provided metadata item' do
         described_class.meta[:day] = 'o'
         expect(described_class.info(:day)).to eql('o')
+      end
+    end
+
+    describe '.mount' do
+      it 'adds the provided App to subcommands' do
+        expect(Simple.subcommands).to be_empty
+
+        Simple.mount(Mountable)
+
+        expect(Simple.subcommands).to eql([Mountable])
+      end
+
+      it 'raises an error when given itself to mount' do
+        expect {Simple.mount(Simple)}.
+          to raise_error(Belafonte::Errors::CircularMount)
       end
     end
 
@@ -135,7 +152,7 @@ module Belafonte
           described_class.class_eval do
             arg :argument3
           end
-        }.to raise_error(Belafonte::Argument::Invalid)
+        }.to raise_error(Belafonte::Errors::InvalidArgument)
       end
     end
   end

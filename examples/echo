@@ -15,7 +15,7 @@ class Echo < Belafonte::App
 
   switch :no_newline,
     short: 'n',
-    description: "Suppresses the newline at the end of output"
+    description: "Suppresses the newline at the end of output, except that I want to make this line really long to see what happens when I get help"
 
   arg :string, times: :unlimited
 

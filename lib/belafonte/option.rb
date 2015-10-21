@@ -1,7 +1,9 @@
 require 'belafonte/flag'
 
 module Belafonte
+  # Flags that take arguments
   class Option < Belafonte::Flag
+    # No argument given
     NoArgument = Class.new(StandardError)
 
     def initialize(options = {})

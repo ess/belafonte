@@ -6,7 +6,7 @@ module Belafonte
     describe '.new' do
       it 'requires a name' do
         expect {described_class.new(short: 'j')}.
-          to raise_error(Belafonte::Flag::NoName)
+          to raise_error(Belafonte::Errors::NoName)
 
         expect {described_class.new(name: :jump, short: 'j')}.
           not_to raise_error

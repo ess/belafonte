@@ -6,7 +6,7 @@ module Belafonte
     describe '.new' do
       it 'requires a name' do
         expect {described_class.new}.
-          to raise_error(Belafonte::Argument::NoName)
+          to raise_error(Belafonte::Errors::NoName)
 
         expect {described_class.new(name: :jump)}.
           not_to raise_error
@@ -29,7 +29,7 @@ module Belafonte
 
       it 'requires that explicit occurrences be at least 1' do
         expect {described_class.new(name: :jump, times: 0)}.
-          to raise_error(Belafonte::Argument::Invalid)
+          to raise_error(Belafonte::Errors::InvalidArgument)
       end
     end
 
@@ -56,7 +56,7 @@ module Belafonte
 
         it 'raises an error if there are not enough argv items' do
           expect {jump6.process(argv)}.
-            to raise_error(Belafonte::Argument::NotEnoughData)
+            to raise_error(Belafonte::Errors::TooFewArguments)
         end
       end
     end
