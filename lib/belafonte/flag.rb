@@ -1,6 +1,11 @@
+require 'belafonte/errors'
+
 module Belafonte
+  # Flag is the base class for switches and options
   class Flag
+    # No flags were given
     NoFlags = Class.new(StandardError)
+    # No name was given
     NoName = Class.new(StandardError)
 
     attr_reader :name, :short, :long, :description
@@ -10,21 +15,15 @@ module Belafonte
     end
 
     def initialize(options = {})
-      unless options[:name]
-        raise NoName.new("Flag name cannot be blank")
+      options[:name].tap do |name|
+        unless options[:name]
+          raise Belafonte::Errors::NoName.new("Flag name cannot be blank")
+        end
+        @name = name.to_sym
       end
 
-      @name = options[:name].to_sym
-
-      @short = [options[:short]].
-        flatten.
-        map {|flag| normalize_flag(flag)}.
-        reject {|flag| flag == ''}
-
-      @long = [options[:long]].
-        flatten.
-        map {|flag| normalize_flag(flag)}.
-        reject {|flag| flag == ''}
+      @short = flag_array(options[:short])
+      @long = flag_array(options[:long])
 
       if short.empty? && long.empty?
         raise NoFlags.new("You must define at least one flag")
@@ -53,6 +52,13 @@ module Belafonte
 
     def longify(option)
       "--#{option.to_s}"
+    end
+
+    def flag_array(items)
+      [items].
+        flatten.
+        map {|flag| normalize_flag(flag)}.
+        reject {|flag| flag == ''}
     end
   end
 end
