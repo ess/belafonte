@@ -1,4 +1,3 @@
-require 'optparse'
 require 'belafonte/switch'
 require 'belafonte/option'
 require 'belafonte/argument'
