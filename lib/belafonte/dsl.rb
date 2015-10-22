@@ -1,5 +1,6 @@
 require 'belafonte/dsl/instance_methods'
 require 'belafonte/dsl/class_methods'
+require 'belafonte/dsl/sharing'
 
 module Belafonte
   # A DSL for making apps
@@ -9,6 +10,6 @@ module Belafonte
     end
 
     include Belafonte::DSL::InstanceMethods
-    #include Belafonte::DSL::Mountin
+    include Belafonte::DSL::Sharing
   end
 end
