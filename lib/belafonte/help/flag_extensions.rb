@@ -1,3 +1,5 @@
+require 'belafonte/flag'
+
 module Belafonte
   module Help
     module FlagExtensions

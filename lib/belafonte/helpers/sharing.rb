@@ -1,7 +1,7 @@
 require 'belafonte/senora'
 
 module Belafonte
-  module DSL
+  module Helpers
     module Sharing
       def share(key, value)
         Belafonte::Senora.store(key, value)

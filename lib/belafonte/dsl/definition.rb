@@ -6,7 +6,7 @@ require 'belafonte/errors'
 module Belafonte
   module DSL
     # Class methods for defining apps
-    module ClassMethods
+    module Definition
       def meta
         @meta ||= {}
       end
