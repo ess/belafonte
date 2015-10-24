@@ -2,21 +2,14 @@ module Belafonte
   class Wrapomatic
     attr_reader :text, :lines, :indents, :columns
 
-    def self.wrap(text, indents = 1, columns = 80)
+    def self.wrap(text, indents = 0, columns = 80)
       new(text, indents, columns).wrapped
     end
 
-    def initialize(text, indents = 1, columns = 80)
-      @text = text
+    def initialize(text, indents = 0, columns = 80)
+      @text = text.split("\n").join(' ')
       @indents = indents
       @columns = columns
-      @lines = []
-      indentomize
-    end
-
-    def refresh(text, indents = 1, columns = 80)
-      @text = text
-      @remainder = ''
       @lines = []
       indentomize
     end
@@ -28,9 +21,9 @@ module Belafonte
     private
 
     def indentomize
-      begin
-        @lines.push(next_line)
-      end until next_line.nil?
+      until (line = next_line).nil?
+        @lines.push(line)
+      end
     end
 
     def next_line

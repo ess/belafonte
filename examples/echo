@@ -1,11 +1,6 @@
 #!/usr/bin/env ruby
 
-begin
-  require 'belafonte'
-rescue LoadError
-  $:.unshift File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
-  require 'belafonte'
-end
+require 'belafonte'
 
 class Echo < Belafonte::App
 
@@ -24,7 +19,7 @@ class Echo < Belafonte::App
   end
 
   def newline
-    switch_active(:no_newline) ? '' : "\n"
+    switch_active?(:no_newline) ? '' : "\n"
   end
 end
 

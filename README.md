@@ -26,6 +26,16 @@ Or install it yourself as:
 
 ## Usage ##
 
+Belafonte can be used both to create traditional single-purpose applications
+(like `cat`, `ls`, `make`, etc), but it can also be used to create "command
+suite" applications (like `git`, `rails`, `heroku`, etc).
+
+### Traditional Applications ###
+
+As mentioned above, "traditional" applications are single-purpose utilities.
+They tend to do one thing, with the goal of doing that one thing exceptionally
+well.
+
 ```ruby
 require 'belafonte'
 
@@ -113,11 +123,19 @@ end
 exit MyApp.new(ARGV).execute!
 ```
 
-## Upcoming Features ##
+### Command Suite Applications ###
 
-So as to allow for "command suite" utilities, I'm planning to allow for the mounting of one application into another, a-la Rack, Sinatra, Grape, etc.
+Command suite applications (CSAs) are, in the simplest scenario, a collection
+of Traditional Applications that are collected under a wrapper to provide a
+uniform user interface.
 
-The API for this is unstable, and I need to figure out some business logic, but it should look something like this:
+Belafonte supports this sort of application through mounting, which is very
+similar in spirit to, say, mounting one Rack application under another. The API is the same as the Traditional App API with two exceptions:
+
+* Use `mount App` to mount an application as a subcommand
+* Apps that mount other apps cannot have :unlimited args
+
+Here's an example:
 
 ```ruby
 require 'belafonte'

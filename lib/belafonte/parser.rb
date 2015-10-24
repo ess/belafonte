@@ -24,10 +24,6 @@ module Belafonte
       }
     end
 
-    def help
-      parser.to_s
-    end
-
     def parser
       @parser ||= OptionParser.new
     end
