@@ -48,12 +48,13 @@ module Belafonte
       end
 
       def arg(name, arg_options = {})
-        args.last.tap do |arg|
-          if arg && arg.unlimited?
-            raise Belafonte::Errors::InvalidArgument.new("You may not add other arguments after an unlimited argument")
-          else
-            args.push(Belafonte::Argument.new(arg_options.merge({name: name})))
-          end
+        if has_unlimited_arg?
+          raise Belafonte::Errors::InvalidArgument.new("You may not add other arguments after an unlimited argument")
+      
+        else
+        
+          args.push(Belafonte::Argument.new(arg_options.merge({name: name})))
+          
         end
       end
 
@@ -68,6 +69,10 @@ module Belafonte
 
         raise Belafonte::Errors::CircularMount.new("An app cannot mount itself") if app == self
         subcommands.push(app)
+      end
+
+      def has_unlimited_arg?
+        !(args.find {|arg| arg.unlimited?}).nil?
       end
     end
   end
