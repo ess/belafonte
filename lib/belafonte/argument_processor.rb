@@ -18,6 +18,9 @@ module Belafonte
       argv = @argv.clone
       arguments.each do |arg|
         values = arg.process(argv)
+        if arg.unlimited? && values.empty?
+          values.push('')
+        end
         processed[arg.name] = values
         argv.shift(values.length)
       end
@@ -34,7 +37,7 @@ module Belafonte
     end
 
     def validate_processed_args
-      raise Belafonte::Errors::TooFewArguments.new("You didn't provide enough arguments") if processed.values.any? {|arg| arg.empty?}
+      raise Belafonte::Errors::TooFewArguments.new("You didn't provide enough arguments") if processed.values.any? {|arg| arg.empty? && !arg.unlimited?}
     end
   end
 end
