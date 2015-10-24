@@ -1,4 +1,9 @@
+require 'forwardable'
+
 class FakeIO
+  extend Forwardable
+
+  def_delegators :@items, :to_s, :include?, :length
   def initialize
     @items = []
   end
@@ -9,9 +14,5 @@ class FakeIO
 
   def print(*args)
     @items.push(*args)
-  end
-
-  def method_missing(method_sym, *arguments, &block)
-    @items.send(method_sym, *arguments)
   end
 end

@@ -138,6 +138,22 @@ module Belafonte
           expect(dummy.instance_eval {help_active?}).to eql(true)
         end
       end
+
+      context 'when an otherwise uncaught exception is raised' do
+        let(:broken) {
+          Broken.new(argv, stdin, stdout, stderr, kernel)
+        }
+
+        it 'writes the error to stderr' do
+          expect(stderr.length).to eql(0)
+          broken.execute!
+          expect(stderr.to_s).to match(/This is why we can't have nice things/)
+        end
+
+        it 'returns 255' do
+          expect(broken.execute!).to eql(255)
+        end
+      end
     end
   end
 end

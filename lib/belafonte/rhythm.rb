@@ -3,6 +3,7 @@ require 'belafonte/errors'
 require 'belafonte/help'
 require 'belafonte/parser'
 require 'belafonte/helpers'
+require 'belafonte/wrapomatic'
 
 module Belafonte
   module Rhythm
@@ -22,11 +23,17 @@ module Belafonte
 
       @command = arg(:command).shift if arg(:command)
 
-      run_setup
+      begin
+        run_setup
 
-      unless dispatch || show_help || run_handle
-        stderr.puts "No handler for the provided command line"
-        return 1
+        unless dispatch || show_help || run_handle
+          stderr.puts "No handler for the provided command line"
+          return 1
+        end
+      rescue => uncaught_error
+        stderr.puts "The application encountered the following error:"
+        stderr.puts Wrapomatic.wrap(uncaught_error.to_s, 1)
+        return 255
       end
 
       0
