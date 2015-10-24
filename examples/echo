@@ -19,7 +19,7 @@ class Echo < Belafonte::App
   end
 
   def newline
-    switch_active(:no_newline) ? '' : "\n"
+    switch_active?(:no_newline) ? '' : "\n"
   end
 end
 
