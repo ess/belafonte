@@ -3,6 +3,32 @@ require 'belafonte/flag'
 
 module Belafonte
   describe Flag do
+    describe '.shortify' do
+      let(:item) {:whatever}
+      let(:shortify) {described_class.shortify(item)}
+
+      it 'is a string' do
+        expect(shortify).to be_a(String)
+      end
+
+      it 'prepends the provided item with a hyphen' do
+        expect(shortify).to eql("-#{item.to_s}")
+      end
+    end
+
+    describe '.longify' do
+      let(:item) {:something}
+      let(:longify) {described_class.longify(item)}
+
+      it 'is a string' do
+        expect(longify).to be_a(String)
+      end
+
+      it 'prepends the provided item with two hyphens' do
+        expect(longify).to eql("--#{item.to_s}")
+      end
+    end
+
     describe '.new' do
       it 'requires a name' do
         expect {described_class.new(short: 'j')}.

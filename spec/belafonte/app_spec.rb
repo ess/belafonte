@@ -24,19 +24,23 @@ module Belafonte
       end
     end
 
-    describe '.execute!' do
+    describe '#execute!' do
       it 'sets up the parser' do
-        expect_any_instance_of(Simple).
-          to receive(:setup_parser!).and_call_original
+        app = Simple.new(argv)
+        expect(Belafonte::Parser).
+          to receive(:new).
+          with(
+            {
+              switches: Simple.switches,
+              options: Simple.options,
+              commands: Simple.subcommands,
+              arguments: Simple.args,
+              argv: app.argv
+            }
+          ).
+          and_call_original
 
-        Simple.new(argv).execute!
-      end
-
-      it 'processes argv' do
-        expect_any_instance_of(Simple).
-          to receive(:process_args!).and_call_original
-
-        Simple.new(argv).execute!
+          app.execute!
       end
     end
 

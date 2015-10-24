@@ -22,13 +22,13 @@ module Belafonte
       end
 
       def name_section
-        "NAME\n#{Wrapomatic.wrap("#{app.display_title} - #{app.summary}")}\n"
+        "NAME\n#{Wrapomatic.wrap("#{app.display_title} - #{app.summary}", 1)}\n"
       end
 
       def synopsis
-        synopsis = "\nSYNOPSIS\n#{Wrapomatic.wrap(app.full_path)}"
+        synopsis = "\nSYNOPSIS\n#{Wrapomatic.wrap(app.full_path, 1)}"
         if app.description
-          synopsis += "\n\n#{Wrapomatic.wrap(app.display_description)}"
+          synopsis += "\n\n#{Wrapomatic.wrap(app.display_description, 1)}"
         end
         synopsis + "\n"
       end
@@ -37,9 +37,9 @@ module Belafonte
         options = "\nOPTIONS\n"
         app.sorted_flags.each do |flag|
           flag.extend(FlagExtensions)
-          options += "#{Wrapomatic.wrap(flag.signature)}"
+          options += "#{Wrapomatic.wrap(flag.signature, 1)}\n"
         end
-        options += "\n#{Wrapomatic.wrap('-h, --help - Shows this message')}"
+        options += "#{Wrapomatic.wrap('-h, --help - Shows this message', 1)}"
 
         options + "\n"
       end
@@ -50,7 +50,7 @@ module Belafonte
 
         app.sorted_commands.each do |command|
           command.extend(CommandExtensions)
-          commands += "#{Wrapomatic.wrap("#{command.display_title} - #{command.display_summary}")}\n"
+          commands += "#{Wrapomatic.wrap("#{command.display_title} - #{command.display_summary}", 1)}\n"
         end
 
         commands + "\n"

@@ -10,13 +10,21 @@ module Belafonte
 
     attr_reader :name, :short, :long, :description
 
+    def self.shortify(option)
+      "-#{option.to_s}"
+    end
+
+    def self.longify(option)
+      "--#{option.to_s}"
+    end
+
     def normalize_flag(flag)
       flag.to_s.strip.gsub(/\s+/, '-')
     end
 
     def initialize(options = {})
       options[:name].tap do |name|
-        unless options[:name]
+        unless name
           raise Belafonte::Errors::NoName.new("Flag name cannot be blank")
         end
         @name = name.to_sym
@@ -47,11 +55,11 @@ module Belafonte
 
     private
     def shortify(option)
-      shortened = "-#{option.to_s}"
+      self.class.shortify(option)
     end
 
     def longify(option)
-      "--#{option.to_s}"
+      self.class.longify(option)
     end
 
     def flag_array(items)

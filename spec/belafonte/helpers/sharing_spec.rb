@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'belafonte/dsl/sharing'
+require 'belafonte/helpers/sharing'
 
 module Belafonte
-  module DSL
+  module Helpers
     describe Sharing do
       let(:dummy) {Object.new.extend(described_class)}
       let(:key) {'key'}
