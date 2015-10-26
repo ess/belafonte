@@ -17,7 +17,15 @@ module Belafonte
       it 'sets up a parser' do
         expect(Belafonte::Parser).
           to receive(:new).
-          with({switches: dummy.configured_switches, options: dummy.configured_options, commands: dummy.configured_subcommands, arguments: dummy.configured_args, argv: dummy.argv}).
+          with(
+            {
+              switches: dummy.configured_switches,
+              options: dummy.configured_options,
+              commands: dummy.configured_subcommands,
+              arguments: dummy.configured_args,
+              argv: dummy.argv
+            }
+          ).
           and_call_original
 
         dummy.execute!
@@ -127,7 +135,7 @@ module Belafonte
 
       context 'when too many arguments are given' do
         let(:dummy) {
-          Simple.new(['superfluous'], stdin, stdout, stderr, kernel)
+          Simple.new(['superfluous', 'args'], stdin, stdout, stderr, kernel)
         }
 
         it 'activates help' do
