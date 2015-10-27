@@ -53,15 +53,15 @@ module Belafonte
 
     describe '.mount' do
       it 'adds the provided App to subcommands' do
-        expect(Simple.subcommands).to be_empty
+        expect(Dummy.subcommands).to be_empty
 
-        Simple.mount(Mountable)
+        Dummy.mount(Mountable)
 
-        expect(Simple.subcommands).to eql([Mountable])
+        expect(Dummy.subcommands).to eql([Mountable])
       end
 
       it 'raises an error when given itself to mount' do
-        expect {Simple.mount(Simple)}.
+        expect {Dummy.mount(Dummy)}.
           to raise_error(Belafonte::Errors::CircularMount)
       end
     end

@@ -6,8 +6,16 @@ require 'belafonte/help/command_extensions'
 module Belafonte
   module Help
     class Generator
+      def self.set_target(app)
+        @target = app
+      end
+
+      def self.target
+        @target
+      end
+
       def initialize(app)
-        @app = app
+        self.class.set_target(@app = app)
         app.extend(AppExtensions)
         @content = name_section + synopsis + options + commands
       end

@@ -32,32 +32,54 @@ module Belafonte
         "#{parent.full_path} #{signature}"
       end
 
-      def signature
-        cmd = display_title
+      def command_arg
+        if Belafonte::Help::Generator.target == self && has_subcommands?
+          ' command'
+        else
+          ''
+        end
+      end
 
-        cmd += " [#{cmd} options]" if has_flags?
+      def display_flags(cmd)
+        if has_flags?
+          " [#{cmd} options]"
+        else
+          ''
+        end
+      end
 
+      def display_args
         if has_args?
-          cmd += " #{configured_args.map(&:name).map(&:to_s).join(' ')}"
+          " #{non_command_args.map(&:name).map(&:to_s).join(' ')}"
+        else
+          ''
         end
+      end
 
-        if has_subcommands? && @command.nil?
-          cmd += " command"
-        end
-
-        cmd
+      def signature
+        display_title.tap {|cmd|
+          return cmd + display_flags(cmd) + display_args + command_arg
+        }
       end
 
       def has_flags?
         configured_switches.any? || configured_options.any?
       end
 
+      def non_command_args
+        configured_args.reject {|arg| arg.name.to_sym == :command}
+      end
+
       def has_args?
-        configured_args.reject {|arg| arg.name.to_sym == :command}.any?
+        non_command_args.any?
       end
 
       def has_subcommands?
         configured_subcommands.any?
+      end
+
+      def help_flag
+        @help_flag ||= Belafonte::Switch.new(name: :help, short: 'h', long: 'help', description: 'Shows this message')
       end
 
       def sorted_flags
