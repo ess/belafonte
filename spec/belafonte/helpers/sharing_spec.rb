@@ -10,7 +10,7 @@ module Belafonte
       let(:storage) {Belafonte::Senora}
 
       before(:each) do
-        storage.reset
+        storage.data.clear
       end
 
       describe '#share' do

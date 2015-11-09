@@ -11,9 +11,5 @@ module Belafonte
     def self.data
       @data ||= {}
     end
-
-    def self.reset
-      @data = {}
-    end
   end
 end
