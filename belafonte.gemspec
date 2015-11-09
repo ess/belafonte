@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "yard"
   spec.add_development_dependency "toady"
+  spec.add_runtime_dependency 'wrapomatic', '~> 0.1'
 end

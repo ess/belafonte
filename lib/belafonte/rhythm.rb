@@ -3,7 +3,7 @@ require 'belafonte/errors'
 require 'belafonte/help'
 require 'belafonte/parser'
 require 'belafonte/helpers'
-require 'belafonte/wrapomatic'
+require 'wrapomatic'
 
 module Belafonte
   module Rhythm
@@ -24,15 +24,21 @@ module Belafonte
       @command = arg(:command).shift if arg(:command)
 
       begin
+        validator = Belafonte::Validator.new(self.class)
+        unless validator.valid?
+          raise "The application #{validator.app_title} has the following issues: #{validator.errors}"
+        end
         run_setup
 
-        unless dispatch || show_help || run_handle
+        if dispatch || show_help || run_handle
+          return 0
+        else
           stderr.puts "No handler for the provided command line"
           return 1
         end
       rescue => uncaught_error
         stderr.puts "The application encountered the following error:"
-        stderr.puts Wrapomatic.wrap(uncaught_error.to_s, 1)
+        stderr.puts Wrapomatic.wrap(uncaught_error.to_s, indents: 1)
         return 255
       end
 

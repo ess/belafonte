@@ -48,14 +48,7 @@ module Belafonte
       end
 
       def arg(name, arg_options = {})
-        if has_unlimited_arg?
-          raise Belafonte::Errors::InvalidArgument.new("You may not add other arguments after an unlimited argument")
-      
-        else
-        
-          args.push(Belafonte::Argument.new(arg_options.merge({name: name})))
-          
-        end
+        args.push(Belafonte::Argument.new(arg_options.merge({name: name})))
       end
 
       def subcommands

@@ -24,26 +24,6 @@ module Belafonte
       end
     end
 
-    describe '#execute!' do
-      it 'sets up the parser' do
-        app = Simple.new(argv)
-        expect(Belafonte::Parser).
-          to receive(:new).
-          with(
-            {
-              switches: Simple.switches,
-              options: Simple.options,
-              commands: Simple.subcommands,
-              arguments: Simple.args,
-              argv: app.argv
-            }
-          ).
-          and_call_original
-
-          app.execute!
-      end
-    end
-
     describe '.info' do
       it 'returns the provided metadata item' do
         described_class.meta[:day] = 'o'
@@ -135,28 +115,6 @@ module Belafonte
         described_class.args.each do |arg|
           expect(arg).to be_a(Belafonte::Argument)
         end
-      end
-    end
-
-    describe '.arg' do
-      it 'disallows arguments after an unlimited argument has been configured' do
-        expect {
-          described_class.class_eval do
-            arg :argument
-          end
-        }.not_to raise_error
-
-        expect {
-          described_class.class_eval do
-            arg :argument2, times: :unlimited
-          end
-        }.not_to raise_error
-
-        expect {
-          described_class.class_eval do
-            arg :argument3
-          end
-        }.to raise_error(Belafonte::Errors::InvalidArgument)
       end
     end
   end
