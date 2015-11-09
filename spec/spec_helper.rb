@@ -9,3 +9,9 @@ require 'belafonte'
 require 'belafonte/rspec'
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
+
+RSpec.configure do |config|
+  config.around(:each) do |example|
+    Timeout.timeout(5_000, &example)
+  end
+end
