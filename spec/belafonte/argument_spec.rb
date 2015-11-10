@@ -39,6 +39,11 @@ module Belafonte
         arg = described_class.new(name: :jump, times: '10')
         expect(arg.times).to eql(10)
       end
+
+      it 'stores its name as a symbol' do
+        arg = described_class.new(name: 'jump')
+        expect(arg.name.to_sym).to eql(arg.name)
+      end
     end
 
     describe '#process' do

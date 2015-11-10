@@ -30,6 +30,7 @@ module Belafonte
     private
     def normalize
       raise Errors::NoName.new("Arguments must be named") unless name
+      @name = name.to_sym
 
       case times
       when nil
