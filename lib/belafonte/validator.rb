@@ -12,7 +12,7 @@ module Belafonte
       error_if_app_has_multiple_unlimited_args
       error_if_app_has_mounts_and_unlimited_args
 
-      errors.keys.empty?
+      errors.empty?
     end
 
     def app_title
@@ -48,6 +48,7 @@ module Belafonte
     end
 
     def error_if_app_has_mounts_and_unlimited_args
+      #puts "eiahmaua unlimited_args == '#{unlimited_args}'"
       if unlimited_args.length > 1 && command_arg_present?
         record_error(:mounts, 'cannot mount apps if you have unlimited args')
         record_error(:args, 'cannot have unlimited args if you mount apps')
@@ -59,7 +60,7 @@ module Belafonte
     end
 
     def command_arg_present?
-      !unlimited_args.find {|arg| arg.name.to_sym == :command}.nil?
+      !unlimited_args.find {|arg| arg.name.equal?(:command)}.nil?
     end
   end
 end

@@ -20,6 +20,15 @@ module Belafonte
         end
       end
 
+      context 'for an app with exactly one unlimited argument' do
+        let(:validator) {described_class.new(Unlimited)}
+        let(:valid) {validator.valid?}
+
+        it 'is true' do
+          expect(valid).to eql(true)
+        end
+      end
+
       context 'for an app with more than one unlimited argument' do
         let(:validator) {described_class.new(Unlimitiception)}
         let(:valid) {validator.valid?}
@@ -34,6 +43,15 @@ module Belafonte
           expect(validator.errors.keys).to include(:args)
           expect(validator.errors[:args]).
             to eql("cannot have more than one unlimited arg")
+        end
+      end
+
+      context 'for an app with mounted apps but no unlimited args' do
+        let(:validator) {described_class.new(Mounter)}
+        let(:valid) {validator.valid?}
+
+        it 'is true' do
+          expect(valid).to eql(true)
         end
       end
 
@@ -68,6 +86,14 @@ module Belafonte
         it 'is true' do
           expect(valid).to eql(true)
         end
+      end
+    end
+
+    describe '#app_title' do
+      let(:validator) {described_class.new(Simple)}
+
+      it 'is the title of the app' do
+        expect(validator.app_title).to eql(Simple.info(:title))
       end
     end
   end
