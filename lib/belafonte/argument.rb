@@ -17,7 +17,7 @@ module Belafonte
         argv
       else
         if argv.length < times
-          raise Belafonte::Errors::TooFewArguments.new("Not enough arguments were given")
+          raise Errors::TooFewArguments.new("Not enough arguments were given")
         end
         argv.first(times)
       end.clone
@@ -29,7 +29,7 @@ module Belafonte
 
     private
     def normalize
-      raise Belafonte::Errors::NoName.new("Arguments must be named") unless name
+      raise Errors::NoName.new("Arguments must be named") unless name
 
       case times
       when nil
@@ -38,10 +38,10 @@ module Belafonte
         @times = -1
         @unlimited = true
       else
-        @times = times.to_i
+        @times = Integer(times)
       end
       
-      raise Belafonte::Errors::InvalidArgument.new("There must be at least one occurrence") unless times > 0 || unlimited?
+      raise Errors::InvalidArgument.new("There must be at least one occurrence") unless times > 0 || unlimited?
     end
 
   end
