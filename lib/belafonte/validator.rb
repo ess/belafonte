@@ -48,7 +48,6 @@ module Belafonte
     end
 
     def error_if_app_has_mounts_and_unlimited_args
-      #puts "eiahmaua unlimited_args == '#{unlimited_args}'"
       if unlimited_args.length > 1 && command_arg_present?
         record_error(:mounts, 'cannot mount apps if you have unlimited args')
         record_error(:args, 'cannot have unlimited args if you mount apps')
