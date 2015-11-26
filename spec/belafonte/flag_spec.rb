@@ -29,10 +29,33 @@ module Belafonte
       end
     end
 
+    describe '.normalize_flag' do
+      let(:flag) {'   d    a t         a       '}
+      let(:normalized) {described_class.normalize_flag(flag)}
+
+      it 'is a string' do
+        expect(normalized).to be_a(String)
+        expect(described_class.normalize_flag(:juniper)).to be_a(String)
+      end
+
+      it 'has no leading or trailing whitespace' do
+        expect(normalized).not_to match(/^\s+\s+$/)
+      end
+
+      it 'has no leading or trailing hyphens' do
+        expect(normalized).not_to match(/^-+.*-+$/)
+      end
+
+      it 'converts in-string whitespace to hyphens' do
+        expect(normalized).not_to match(/\s+/)
+        expect(normalized).to eql('d-a-t-a')
+      end
+    end
+
     describe '.new' do
       it 'requires a name' do
         expect {described_class.new(short: 'j')}.
-          to raise_error(Belafonte::Errors::NoName)
+          to raise_error(Belafonte::Errors::NoName, "Flag name cannot be blank")
 
         expect {described_class.new(name: :jump, short: 'j')}.
           not_to raise_error
@@ -77,35 +100,14 @@ module Belafonte
       end
 
       it 'requires that at least one short or one long flag be present' do
-        expect {described_class.new(name: :jump)}.to raise_error(Belafonte::Flag::NoFlags)
+        expect {described_class.new(name: :jump)}.to raise_error(Belafonte::Flag::NoFlags, "You must define at least one flag")
         expect {described_class.new(name: :jump, short: 'j')}.not_to raise_error
         expect {described_class.new(name: :jump, long: 'jump in the line')}.not_to raise_error
       end
-    end
 
-    describe '#variations' do
-      let(:flag) {
-        described_class.new(
-          name: :jump,
-          short: ['j', 'r'],
-          long: ['jump', 'rock'],
-          description: 'okay, I believe you')
-      }
-
-      it 'is an array' do
-        expect(flag.flags).to be_a(Array)
-      end
-
-      it 'contains all of the short variations of the flag' do
-        flag.short.each do |short|
-          expect(flag.flags).to include(short)
-        end
-      end
-
-      it 'contains all of the long variations of the flag' do
-        flag.long.each do |long|
-          expect(flag.flags).to include(long)
-        end
+      it 'stores its name as a symbol' do
+        flag = described_class.new(name: 'string', short: 's')
+        expect(flag.name.to_sym).to eql(flag.name)
       end
     end
 

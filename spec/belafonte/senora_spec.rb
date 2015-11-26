@@ -4,23 +4,12 @@ require 'belafonte/senora'
 module Belafonte
   describe Senora do
     before(:each) do
-      described_class.reset
+      described_class.data.clear
     end
 
     describe '.data' do
       it 'is a Hash' do
         expect(described_class.data).to be_a(Hash)
-      end
-    end
-
-    describe '.reset' do
-      it 'clears all keys and values from data' do
-        described_class.store(:key1, '1')
-        described_class.store(:key2, 'two')
-        expect(described_class.data.keys).not_to be_empty
-
-        described_class.reset
-        expect(described_class.data.keys).to be_empty
       end
     end
 

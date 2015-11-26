@@ -6,7 +6,7 @@ module Belafonte
     describe '.new' do
       it 'requires a name' do
         expect {described_class.new}.
-          to raise_error(Belafonte::Errors::NoName)
+          to raise_error(Belafonte::Errors::NoName, "Arguments must be named")
 
         expect {described_class.new(name: :jump)}.
           not_to raise_error
@@ -29,7 +29,20 @@ module Belafonte
 
       it 'requires that explicit occurrences be at least 1' do
         expect {described_class.new(name: :jump, times: 0)}.
-          to raise_error(Belafonte::Errors::InvalidArgument)
+          to raise_error(
+            Belafonte::Errors::InvalidArgument,
+            "There must be at least one occurrence"
+          )
+      end
+
+      it 'normalizes an explicit occurrence count to integer' do
+        arg = described_class.new(name: :jump, times: '10')
+        expect(arg.times).to eql(10)
+      end
+
+      it 'stores its name as a symbol' do
+        arg = described_class.new(name: 'jump')
+        expect(arg.name.to_sym).to eql(arg.name)
       end
     end
 
@@ -39,14 +52,16 @@ module Belafonte
       context 'for an unlimited argument' do
         let(:argument) {described_class.new(name: :jump, times: :unlimited)}
 
-        it 'is the entire argv passed in' do
+        it 'is a copy of the entire argv passed in' do
           expect(argument.process(argv)).to eql(argv)
+          expect(argument.process(argv).object_id).not_to eql(argv.object_id)
         end
       end
 
       context 'for a limited argument' do
         let(:jump1) {described_class.new(name: :jump)}
         let(:jump2) {described_class.new(name: :jump, times: 2)}
+        let(:jump5) {described_class.new(name: :jump, times: 5)}
         let(:jump6) {described_class.new(name: :jump, times: 6)}
 
         it 'is the first "times" items from the provided argv' do
@@ -56,7 +71,12 @@ module Belafonte
 
         it 'raises an error if there are not enough argv items' do
           expect {jump6.process(argv)}.
-            to raise_error(Belafonte::Errors::TooFewArguments)
+            to raise_error(
+              Belafonte::Errors::TooFewArguments,
+              'Not enough arguments were given'
+            )
+
+          expect {jump5.process(argv)}.not_to raise_error
         end
       end
     end

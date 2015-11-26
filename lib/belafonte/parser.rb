@@ -70,31 +70,27 @@ module Belafonte
     end
 
     def switches
-      data[:switches]
+      data.fetch(:switches)
     end
 
     def switch_results
-      parsed[:switches]
+      parsed.fetch(:switches)
     end
 
     def option_results
-      parsed[:options]
+      parsed.fetch(:options)
     end
 
     def options
-      data[:options]
-    end
-
-    def commands
-      data[:commands]
+      data.fetch(:options)
     end
 
     def arguments
-      data[:arguments]
+      data.fetch(:arguments)
     end
 
     def argv
-      data[:argv]
+      data.fetch(:argv)
     end
 
     def data
