@@ -60,8 +60,8 @@ module Belafonte
           dummy.execute!
         end
 
-        it 'returns 0' do
-          expect(dummy.execute!).to eql(0)
+        it 'exits clean' do
+          expect(dummy.execute!).to eql([:exit, 0])
         end
       end
 
@@ -87,8 +87,8 @@ module Belafonte
             dummy.execute!
           end
           
-          it 'returns 0' do
-            expect(dummy.execute!).to eql(0)
+          it 'exits clean' do
+            expect(dummy.execute!).to eql([:exit, 0])
           end
         end
 
@@ -108,8 +108,8 @@ module Belafonte
               allow(dummy).to receive(:run_handle).and_return(0)
             end
 
-            it 'returns 0' do
-              expect(dummy.execute!).to eql(0)
+            it 'exits clean' do
+              expect(dummy.execute!).to eql([:exit, 0])
             end
           end
         end
@@ -128,8 +128,8 @@ module Belafonte
           expect(stderr.length).not_to eql(0)
         end
 
-        it 'returns 1' do
-          expect(dummy.execute!).to eql(1)
+        it 'exits with an error status' do
+          expect(dummy.execute!).to eql([:exit, 1])
         end
       end
 
@@ -158,8 +158,8 @@ module Belafonte
           expect(stderr.to_s).to match(/This is why we can't have nice things/)
         end
 
-        it 'returns 255' do
-          expect(broken.execute!).to eql(255)
+        it 'exits with a critical failure' do
+          expect(broken.execute!).to eql([:exit, 255])
         end
       end
     end
