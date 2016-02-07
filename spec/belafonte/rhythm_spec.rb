@@ -45,7 +45,7 @@ module Belafonte
 
       context 'when dispatch is successful' do
         before(:each) do
-          allow(dummy).to receive(:dispatch).and_return(true)
+          allow(dummy).to receive(:dispatch).and_return(0)
         end
 
         it 'does not show help' do
@@ -67,7 +67,7 @@ module Belafonte
 
       context 'when dispatch is not successful' do
         before(:each) do
-          allow(dummy).to receive(:dispatch).and_return(false)
+          allow(dummy).to receive(:dispatch).and_return(nil)
         end
 
         it 'tries to show help' do
@@ -78,7 +78,7 @@ module Belafonte
 
         context 'when help gets shown' do
           before(:each) do
-            allow(dummy).to receive(:show_help).and_return(true)
+            allow(dummy).to receive(:show_help).and_return(0)
           end
 
           it 'does not try to handle the run' do
@@ -94,7 +94,7 @@ module Belafonte
 
         context 'when it is not appropriate to show help' do
           before(:each) do
-            allow(dummy).to receive(:show_help).and_return(false)
+            allow(dummy).to receive(:show_help).and_return(nil)
           end
 
           it 'tries to handle the run itself' do
@@ -105,7 +105,7 @@ module Belafonte
 
           context 'when handled successfully' do
             before(:each) do
-              allow(dummy).to receive(:run_handle).and_return(true)
+              allow(dummy).to receive(:run_handle).and_return(0)
             end
 
             it 'returns 0' do
@@ -115,11 +115,11 @@ module Belafonte
         end
       end
 
-      context 'when the command lien cannot be handled by the app' do
+      context 'when the command line cannot be handled by the app' do
         before(:each) do
-          allow(dummy).to receive(:dispatch).and_return(false)
-          allow(dummy).to receive(:show_help).and_return(false)
-          allow(dummy).to receive(:run_handle).and_return(false)
+          allow(dummy).to receive(:dispatch).and_return(nil)
+          allow(dummy).to receive(:show_help).and_return(nil)
+          allow(dummy).to receive(:run_handle).and_return(nil)
         end
 
         it 'writes an error to stderr' do

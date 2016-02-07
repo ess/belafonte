@@ -2,12 +2,9 @@ module Belafonte
   module Help
     module AppExtensions
       def root
-        if parent
-          parent.extend(AppExtensions)
-          parent.root
-        else
-          self
-        end
+        return self unless parent
+        parent.extend(AppExtensions)
+        parent.root
       end
 
       def root?
@@ -33,27 +30,26 @@ module Belafonte
       end
 
       def command_arg
-        if Belafonte::Help::Generator.target == self && has_subcommands?
-          ' command'
-        else
-          ''
-        end
+        return '' unless show_command_arg?
+        ' command'
+      end
+
+      def show_command_arg?
+        Belafonte::Help::Generator.target == self && has_subcommands?
       end
 
       def display_flags(cmd)
-        if has_flags?
-          " [#{cmd} options]"
-        else
-          ''
-        end
+        return '' unless has_flags?
+        " [#{cmd} options]"
       end
 
       def display_args
-        if has_args?
-          " #{non_command_args.map(&:name).map(&:to_s).join(' ')}"
-        else
-          ''
-        end
+        return '' unless has_args?
+        " #{non_command_arg_names.join(' ')}"
+      end
+
+      def non_command_arg_names
+        non_command_args.map(&:name).map(&:to_s)
       end
 
       def signature
@@ -83,11 +79,13 @@ module Belafonte
       end
 
       def sorted_flags
-        (configured_switches + configured_options).sort {|a,b| a.name <=> b.name}
+        (configured_switches + configured_options).
+          sort {|left,right| left.name <=> right.name}
       end
 
       def sorted_commands
-        configured_subcommands.sort {|a,b| a.name <=> b.name}
+        configured_subcommands.
+          sort {|left,right| left.name <=> right.name}
       end
     end
   end

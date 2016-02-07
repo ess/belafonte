@@ -1,4 +1,4 @@
-require 'optparse'
+#require 'optparse'
 require 'belafonte/errors'
 require 'belafonte/help'
 require 'belafonte/parser'
@@ -8,6 +8,39 @@ require 'wrapomatic'
 module Belafonte
   module Rhythm
     def execute!
+      parse_command_line
+      @command = arg(:command).shift if arg(:command)
+
+      calculate_exit_status
+    end
+
+    private
+    def parent
+      @parent
+    end
+
+    def calculate_exit_status
+      begin
+        validate_app
+        run_setup
+
+        unless (status = dispatch || show_help || run_handle || nil)
+          stderr.puts "No handler for the provided command line"
+          return 1
+        end
+
+      rescue SystemExit => exit_requested
+        return exit_requested.status
+      rescue => uncaught_error
+        stderr.puts "The application encountered the following error:"
+        stderr.puts Wrapomatic.wrap(uncaught_error.to_s, indents: 1)
+        return 255
+      end
+
+      status
+    end
+
+    def parse_command_line
       (@parser = Parser.new(
         switches: configured_switches,
         options: configured_options,
@@ -20,34 +53,13 @@ module Belafonte
         @arguments = parsed[:args]
         activate_help! if parsed[:help]
       end
-
-      @command = arg(:command).shift if arg(:command)
-
-      begin
-        validator = Belafonte::Validator.new(self.class)
-        unless validator.valid?
-          raise "The application #{validator.app_title} has the following issues: #{validator.errors}"
-        end
-        run_setup
-
-        if dispatch || show_help || run_handle
-          return 0
-        else
-          stderr.puts "No handler for the provided command line"
-          return 1
-        end
-      rescue => uncaught_error
-        stderr.puts "The application encountered the following error:"
-        stderr.puts Wrapomatic.wrap(uncaught_error.to_s, indents: 1)
-        return 255
-      end
-
-      0
     end
 
-    private
-    def parent
-      @parent
+    def validate_app
+      validator = Belafonte::Validator.new(self.class)
+      unless validator.valid?
+        raise "The application #{validator.app_title} has the following issues: #{validator.errors}"
+      end
     end
 
     def subcommand_instance(command)
@@ -60,29 +72,29 @@ module Belafonte
     end
 
     def dispatch
-      return false if @command.nil?
+      return nil if @command.nil?
       handler = subcommand_instance(@command)
 
       unless handler
         activate_help!
-        return false
+        return nil
       end
 
       handler.activate_help! if help_active?
       handler.execute!
-      true
+      0
     end
 
     def show_help
-      return false unless help_active?
+      return nil unless help_active?
       stdout.print Belafonte::Help.content_for(self)
-      true
+      0
     end
 
     def run_handle
-      return false unless respond_to?(:handle)
+      return nil unless respond_to?(:handle)
       handle
-      true
+      0
     end
 
     def run_setup
