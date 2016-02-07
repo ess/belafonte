@@ -26,6 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "toady"
   spec.add_development_dependency "mutant"
   spec.add_development_dependency 'mutant-rspec'
-  spec.add_runtime_dependency 'wrapomatic', '~> 0.1'
+  spec.add_runtime_dependency 'wrapomatic', '~> 0.3'
   spec.add_runtime_dependency 'optionally'
 end
