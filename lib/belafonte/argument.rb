@@ -1,4 +1,6 @@
 require 'belafonte/errors'
+require 'belafonte/argument/argv_processor'
+require 'belafonte/argument/occurrence_normalizer'
 
 module Belafonte
   # Represents a command line argument
@@ -12,15 +14,7 @@ module Belafonte
     end
 
     def process(argv)
-      case times
-      when -1
-        argv
-      else
-        if argv.length < times
-          raise Belafonte::Errors::TooFewArguments.new("Not enough arguments were given")
-        end
-        argv.first(times)
-      end.clone
+      ARGVProcessor.process(times, argv).clone
     end
 
     def unlimited?
@@ -29,20 +23,23 @@ module Belafonte
 
     private
     def normalize
-      raise Belafonte::Errors::NoName.new("Arguments must be named") unless name
-
-      case times
-      when nil
-        @times = 1
-      when :unlimited
-        @times = -1
-        @unlimited = true
-      else
-        @times = times.to_i
-      end
-      
-      raise Belafonte::Errors::InvalidArgument.new("There must be at least one occurrence") unless times > 0 || unlimited?
+      normalize_name
+      normalize_times
     end
 
+    def normalize_times
+      @unlimited = times.eql?(:unlimited)
+      @times = OccurrenceNormalizer.normalize(times)
+      validate_occurrences
+    end
+
+    def validate_occurrences
+      raise Errors::InvalidArgument.new("There must be at least one occurrence") unless times > 0 || unlimited?
+    end
+
+    def normalize_name
+      raise Errors::NoName.new("Arguments must be named") unless name
+      @name = name.to_sym
+    end
   end
 end

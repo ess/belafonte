@@ -1,5 +1,6 @@
 require 'belafonte/dsl'
 require 'belafonte/rhythm'
+require 'belafonte/validator'
 
 module Belafonte
   # An application container
@@ -18,5 +19,6 @@ module Belafonte
       @kernel = kernel
       @parent = parent
     end
+
   end
 end

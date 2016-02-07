@@ -21,5 +21,8 @@ module Belafonte
     
     # UnknownCommand poop
     UnknownCommand = Class.new(StandardError)
+
+    # ExitStatus
+    ExitStatus = Class.new(StandardError)
   end
 end
