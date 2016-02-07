@@ -1,4 +1,3 @@
-#require 'optparse'
 require 'belafonte/errors'
 require 'belafonte/help'
 require 'belafonte/parser'
@@ -11,7 +10,7 @@ module Belafonte
       parse_command_line
       @command = arg(:command).shift if arg(:command)
 
-      calculate_exit_status
+      kernel.exit calculate_exit_status
     end
 
     private
@@ -82,7 +81,6 @@ module Belafonte
 
       handler.activate_help! if help_active?
       handler.execute!
-      0
     end
 
     def show_help
